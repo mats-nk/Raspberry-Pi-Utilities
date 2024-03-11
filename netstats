@@ -1,0 +1,51 @@
+#! /bin/sh
+# This script prints useful diagnostics for common Pi networking systems
+
+# Function to print coloured headings
+#  delete "tput" lines for plain output
+print_head () {
+ tput setaf 6
+ echo $1
+ tput sgr 0
+}
+
+checkactive () {
+if [ $(systemctl is-active $1) = 'active' ]; then
+	echo $1 'active'
+fi
+}
+
+print_head "- Networking System"
+# Check status of networking system
+checkactive 'systemd-networkd'
+checkactive 'dhcpcd'
+checkactive 'NetworkManager'
+checkactive 'networking'
+
+print_head "- IP addresses & routes"
+# Print IP addresses & routes
+ip a
+echo
+ip r
+
+print_head "- Network Devices"
+ls /sys/class/net	# network devices
+
+print_head "- Connected WiFi"
+# Get SSID of connected WiFi (WRONG if AP!)
+if [ -e /sys/class/net/wlan0 ]; then
+	if [ $(systemctl is-active 'NetworkManager') = 'active' ]; then
+		nmcli connection show |  awk '/wlan0/ {print $1}'
+	else
+		wpa_cli -i wlan0 status | grep -w ssid | awk -F'[=]' '{print $2}'
+	fi
+fi
+
+print_head "- Available WiFi connections"
+if [ -e /sys/class/net/wlan0 ]; then
+	if [ $(systemctl is-active 'NetworkManager') = 'active' ]; then
+		nmcli connection show |  awk '/wifi/ {print $1}'
+	else
+		wpa_cli list_networks | awk '/any/ {print $2}'
+	fi
+fi
