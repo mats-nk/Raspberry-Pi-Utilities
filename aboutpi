@@ -59,8 +59,6 @@ if [ -e /sys/class/net/wlan0 ]; then
 	fi
 fi
 
-sudo fdisk -l /dev/mmcblk0 | grep "Disk identifier"
-
 print_head "Disk"
 
 CPUID=$(awk '/Serial/ {print $3}' /proc/cpuinfo | cut -c 9-)
