@@ -2,7 +2,7 @@
 # 2024-02-28	user space
 
 # Function to print coloured headings
-#  delete "tput" lines for plain output
+# Delete "tput" lines for plain output
 print_head () {
  tput setaf 6
  echo $1
@@ -60,6 +60,8 @@ if [ -e /sys/class/net/wlan0 ]; then
 fi
 
 sudo fdisk -l /dev/mmcblk0 | grep "Disk identifier"
+
+print_head "Disk"
 
 CPUID=$(awk '/Serial/ {print $3}' /proc/cpuinfo | cut -c 9-)
 echo "Serial: " $CPUID
