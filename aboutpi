@@ -1,5 +1,6 @@
 #! /bin/sh
 # 2024-02-28	user space
+# 2024-06-29    Added header for disk and some start and end space for clarity
 
 # Function to print coloured headings
 # Delete "tput" lines for plain output
@@ -8,6 +9,8 @@ print_head () {
  echo $1
  tput sgr 0
 }
+
+print_head ""
 
 if [ -e /etc/rpi-issue ]; then
  print_head "- Original Installation"
@@ -70,3 +73,5 @@ if [ -e /opt/vc/bin/vcgencmd -o /usr/bin/vcgencmd ]; then
 fi
 print_head "- Created"
 sudo tune2fs -l $(mount -v | awk '/ on \/ / {print $1}') | grep created
+
+print_head ""
